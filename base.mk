@@ -34,8 +34,8 @@ endif
 
 SDKFLAGS=-mios-version-min=3.0 -isysroot $(SDK)
 CFLAGS=-Wall
-ARCH=-arch armv7 -arch arm64
-INCLUDE=-I/usr/include -Iinclude/iphoneheaders -Iinclude
+ARCH=-arch arm64 -arch armv7
+INCLUDE=-Iinclude/iphoneheaders -Iinclude
 
 CC=clang -g -O2 $(ARCH) $(SDKFLAGS) $(INCLUDE)
 

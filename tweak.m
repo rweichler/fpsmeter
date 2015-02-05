@@ -88,10 +88,12 @@ void yeah_bro(int fps, IOSurfaceRef buffer, CGRect bounds)
 
 void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer, CGRect bounds)
 {
+    if(fps == -1) return;
+
     yeah_bro(fps, buffer, bounds);
 
     IOSurfaceRef other_buffer;
-    IOMobileFramebufferGetLayerDefaultSurface(fb, 0, &other_buffer);
+    IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
     yeah_bro(fps, other_buffer, bounds);
 }
 
@@ -116,17 +118,14 @@ MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
     CGRect frame,
    int flags
 ) {
-    int fps = -1;
-    if(buffer != NULL) fps = get_fps();
+    int fps = buffer == NULL ? -1 : get_fps();
 
     //idk... do it before and after %orig so it flickers less???????
-    if(fps != -1)
-        yeah_breh(fps, fb, buffer, bounds);
+    yeah_breh(fps, fb, buffer, bounds);
 
     kern_return_t result = _hook_IOMobileFramebufferSwapSetLayer(fb, layer, buffer, bounds, frame, flags);
 
-    if(fps != -1)
-        yeah_breh(fps, fb, buffer, bounds);
+    yeah_breh(fps, fb, buffer, bounds);
 
 
     return result;

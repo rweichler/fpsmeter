@@ -2,7 +2,7 @@ DYLIB=FPSMeter.dylib
 PLIST=FPSMeter.plist
 MS=/Library/MobileSubstrate/DynamicLibraries
 
-FRAMEWORKS=/usr/lib/libsubstrate.dylib -framework IOMobileFramebuffer -framework Foundation -framework CoreGraphics -framework CoreSurface -framework CoreText
+FRAMEWORKS=include/libsubstrate.dylib -framework IOMobileFramebuffer -framework Foundation -framework CoreGraphics -framework CoreSurface -framework CoreText
 
 include base.mk
 all: $(DYLIB)
