@@ -8,6 +8,7 @@
 #include <Foundation/Foundation.h>
 #include <IOMobileFramebuffer.h>
 #include <UIKit/UIKit.h>
+#import <CoreText/CoreText.h>
 typedef void * IOMobileFramebufferRef;
 typedef int kern_return_t;
 int CoreSurfaceBufferLock(CoreSurfaceBufferRef surface, unsigned int lockType);
@@ -62,12 +63,49 @@ const CGFloat components[] = {
     1.0
 };
 
-static void drawFPS(CGContextRef context, int fps)
+static void drawFPS(CGContextRef context, int fps, float height)
 {
-    Log(@"blow meee");
-    CGColorRef red = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGColorRef red = CGColorCreate(rgbColorSpace, components);
+    CGColorSpaceRelease(rgbColorSpace);
+
     CGContextSetFillColorWithColor(context, red);
     CGContextFillRect(context, CGRectMake(0,0,100,100));
+}
+
+void yeah_bro(int fps, IOSurfaceRef buffer, CGRect bounds)
+{
+    CGContextRef context = NULL;
+    uint32_t seed;
+    if(initContext(buffer, &context, &seed))
+    {
+        drawFPS(context, fps, bounds.size.height);
+        delContext(buffer, &context, &seed);
+    }
+    else
+        Log(@"FUUCK");
+}
+
+void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer, CGRect bounds)
+{
+    yeah_bro(fps, buffer, bounds);
+
+    IOSurfaceRef other_buffer;
+    IOMobileFramebufferGetLayerDefaultSurface(fb, 0, &other_buffer);
+    yeah_bro(fps, other_buffer, bounds):
+}
+
+int get_fps()
+{
+    clock_t time = clock();
+    int fps = -1;
+    if(_last)
+    {
+        float fpsf = 1.0*CLOCKS_PER_SEC/(time - _last);
+        fps = (int)(fpsf + 0.5);
+    }
+    _last = time;
+    return fps;
 }
 
 MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
@@ -78,23 +116,20 @@ MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
     CGRect frame,
    int flags
 ) {
-    clock_t time = clock();
-    if(buffer != NULL && _last)
-    {
-        float fpsf = 1.0*CLOCKS_PER_SEC/(time - _last);
-        int fps = (int)(fpsf + 0.5);
-        CGContextRef context = NULL;
-        uint32_t seed;
-        if(initContext(buffer, &context, &seed))
-        {
-            drawFPS(context, fps);
-            delContext(buffer, &context, &seed);
-        }
-        else
-            Log(@"FUUUCK");
-    }
-    _last = time;
-    return _hook_IOMobileFramebufferSwapSetLayer(fb, layer, buffer, bounds, frame, flags);
+    int fps = -1;
+    if(buffer != NULL) fps = get_fps();
+
+    //idk... do it before and after %orig so it flickers less???????
+    if(fps != -1)
+        yeah_breh(fps, fb, buffer, bounds);
+
+    kern_return_t result = _hook_IOMobileFramebufferSwapSetLayer(fb, layer, buffer, bounds, frame, flags);
+
+    if(fps != -1)
+        yeah_breh(fps, fb, buffer, bounds);
+
+
+    return result;
 }
 
 MSInitialize
