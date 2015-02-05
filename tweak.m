@@ -82,8 +82,6 @@ void yeah_bro(int fps, IOSurfaceRef buffer, CGRect bounds)
         drawFPS(context, fps, bounds.size.height);
         delContext(buffer, &context, &seed);
     }
-    else
-        Log(@"FUUCK");
 }
 
 void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer, CGRect bounds)
