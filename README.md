@@ -1,3 +1,5 @@
+disclaimer: i have no idea what im doing.
+
 tested on 64-bit iOS 8.1.2. use at your own risk
 
 Trying to fill http://www.reddit.com/r/jailbreak/comments/2uszm3/request_fps_meter/
