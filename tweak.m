@@ -92,7 +92,7 @@ void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer, CGRect b
 
     IOSurfaceRef other_buffer;
     IOMobileFramebufferGetLayerDefaultSurface(fb, 0, &other_buffer);
-    yeah_bro(fps, other_buffer, bounds):
+    yeah_bro(fps, other_buffer, bounds);
 }
 
 int get_fps()
