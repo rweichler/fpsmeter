@@ -77,7 +77,7 @@ static void drawFPS(CGContextRef context, int fps)
 
     //draw bg
     CGContextSetFillColorWithColor(context, bgcolor);
-    CGContextFillRect(context, CGRectMake(0,0,200,100));
+    CGContextFillRect(context, CGRectMake(40,15,fps > 99 ? 165 : fps > 9 ? 150 : 130,40));
 
     //draw text
     CGContextSetStrokeColorWithColor(context, textcolor);
