@@ -55,21 +55,57 @@ static void delContext(IOSurfaceRef fb_surface, CGContextRef *context, uint32_t 
     CGContextRelease(*context);
 }
 
-const CGFloat components[] = {
-    1.0,
+const CGFloat bgc[] = {
     0,
     0,
-    1.0
+    0
+};
+
+const CGFloat tc[] = {
+    1,
+    1,
+    1
 };
 
 static void drawFPS(CGContextRef context, int fps)
 {
+    //setup colors
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGColorRef red = CGColorCreate(rgbColorSpace, components);
+    CGColorRef bgcolor = CGColorCreate(rgbColorSpace, bgc);
+    CGColorRef textcolor = CGColorCreate(rgbColorSpace, tc);
     CGColorSpaceRelease(rgbColorSpace);
 
-    CGContextSetFillColorWithColor(context, red);
-    CGContextFillRect(context, CGRectMake(0,0,100,100));
+    //draw bg
+    CGContextSetFillColorWithColor(context, bgcolor);
+    CGContextFillRect(context, CGRectMake(0,0,200,100));
+
+    //draw text
+    CGContextSetStrokeColorWithColor(context, textcolor);
+    CGContextSetFillColorWithColor(context, textcolor);
+
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSelectFont(context, "Helvetica", 40, kCGEncodingMacRoman);
+    CGContextSetTextDrawingMode(context, kCGTextFill);
+
+    char text[20];
+    int len = 0;
+    while(fps > 0)
+    {
+        for(int i = len; i > 0; i--)
+        {
+            text[i] = text[i - 1];
+        }
+        text[0] = '0' + fps % 10;
+        fps /= 10;
+        len++;
+    }
+    text[len++] = ' ';
+    text[len++] = 'F';
+    text[len++] = 'P';
+    text[len++] = 'S';
+    text[len++] = '\0';
+
+    CGContextShowTextAtPoint (context, 50, 20, text, len - 1);
 }
 
 void yeah_bro(int fps, IOSurfaceRef buffer)
