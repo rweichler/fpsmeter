@@ -7,6 +7,7 @@ IP=5s
 FRAMEWORKS=include/libsubstrate.dylib -framework IOMobileFramebuffer -framework Foundation -framework CoreGraphics -framework CoreSurface -framework CoreText
 
 include base.mk
+CFLAGS+=-Wno-unused-function
 all: $(DYLIB)
 clean:
 	rm -f tweak.o $(DYLIB)

@@ -28,7 +28,6 @@ kern_return_t IOMobileFramebufferSwapSetLayer(
     int flags
 );
 
-
 static clock_t _last;
 
 static BOOL initContext(IOSurfaceRef fb_surface, CGContextRef *context, uint32_t *seed)
@@ -63,7 +62,7 @@ const CGFloat components[] = {
     1.0
 };
 
-static void drawFPS(CGContextRef context, int fps, float height)
+static void drawFPS(CGContextRef context, int fps)
 {
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
     CGColorRef red = CGColorCreate(rgbColorSpace, components);
@@ -73,26 +72,26 @@ static void drawFPS(CGContextRef context, int fps, float height)
     CGContextFillRect(context, CGRectMake(0,0,100,100));
 }
 
-void yeah_bro(int fps, IOSurfaceRef buffer, CGRect bounds)
+void yeah_bro(int fps, IOSurfaceRef buffer)
 {
     CGContextRef context = NULL;
     uint32_t seed;
     if(initContext(buffer, &context, &seed))
     {
-        drawFPS(context, fps, bounds.size.height);
+        drawFPS(context, fps);
         delContext(buffer, &context, &seed);
     }
 }
 
-void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer, CGRect bounds)
+void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer)
 {
     if(fps == -1) return;
 
-    yeah_bro(fps, buffer, bounds);
+    yeah_bro(fps, buffer);
 
     IOSurfaceRef other_buffer;
     IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
-    yeah_bro(fps, other_buffer, bounds);
+    yeah_bro(fps, other_buffer);
 }
 
 int get_fps()
@@ -119,17 +118,19 @@ MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
     int fps = buffer == NULL ? -1 : get_fps();
 
     //idk... do it before and after %orig so it flickers less???????
-    yeah_breh(fps, fb, buffer, bounds);
+    yeah_breh(fps, fb, buffer);
 
     kern_return_t result = _hook_IOMobileFramebufferSwapSetLayer(fb, layer, buffer, bounds, frame, flags);
 
-    yeah_breh(fps, fb, buffer, bounds);
+    yeah_breh(fps, fb, buffer);
 
 
     return result;
 }
 
+#define CaptainHook(FUNC) MSHookFunction(&FUNC, MSHake(hook_ ## FUNC))
+
 MSInitialize
 {
-    MSHookFunction(&IOMobileFramebufferSwapSetLayer, MSHake(hook_IOMobileFramebufferSwapSetLayer));
+    CaptainHook(IOMobileFramebufferSwapSetLayer);
 }

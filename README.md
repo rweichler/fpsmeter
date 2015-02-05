@@ -9,5 +9,3 @@ This uses code from [Veency](http://gitweb.saurik.com/veency.git) which is under
 It also uses code from a file in another project, so follow that license too if it has one (idk): https://github.com/danielooi/anthrax/blob/master/rdkit/framebuffer.c
 
 Everything else is licensed under the one that lets you do whatever you want, including you being able to sue me if it breaks your phone or kills your family
-
-![](https://github.com/rweichler/dotfiles/raw/master/wailord_fucking_skitty.jpg)
