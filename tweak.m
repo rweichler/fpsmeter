@@ -87,25 +87,8 @@ static void drawFPS(CGContextRef context, int fps)
     CGContextSelectFont(context, "Helvetica", 40, kCGEncodingMacRoman);
     CGContextSetTextDrawingMode(context, kCGTextFill);
 
-    char text[20];
-    int len = 0;
-    while(fps > 0)
-    {
-        for(int i = len; i > 0; i--)
-        {
-            text[i] = text[i - 1];
-        }
-        text[0] = '0' + fps % 10;
-        fps /= 10;
-        len++;
-    }
-    text[len++] = ' ';
-    text[len++] = 'F';
-    text[len++] = 'P';
-    text[len++] = 'S';
-    text[len++] = '\0';
-
-    CGContextShowTextAtPoint (context, 50, 20, text, len - 1);
+    const char *text = [NSString stringWithFormat:@"%d FPS", fps].UTF8String;
+    CGContextShowTextAtPoint (context, 50, 20, text, strlen(text));
 }
 
 void yeah_bro(int fps, IOSurfaceRef buffer)
