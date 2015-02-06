@@ -102,15 +102,26 @@ void yeah_bro(int fps, IOSurfaceRef buffer)
     }
 }
 
+int IOMobileFramebufferGetMainDisplay(void **);
+
 void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer)
 {
     if(fps == -1) return;
 
-    yeah_bro(fps, buffer);
+    //draw surface from orig hook
+    //yeah_bro(fps, buffer); //is an IOSurface
 
-    IOSurfaceRef other_buffer;
+    //get surface from IOMobileFramebuffer
+    IOSurfaceRef other_buffer; //is also an IOSurface
     IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
-    yeah_bro(fps, other_buffer);
+    //yeah_bro(fps, other_buffer);
+
+    //get surface from the main buffer
+    IOSurfaceRef main_buffer; //not an IOSurface... just some random pointer. :/
+    IOMobileFramebufferRef main_fb;
+    IOMobileFramebufferGetMainDisplay(&main_fb);
+    IOMobileFramebufferGetLayerDefaultSurface(main_fb, 0, (CoreSurfaceBufferRef *)&main_buffer);
+    yeah_bro(fps, main_buffer); //doesnt do anything..
 }
 
 int get_fps()

@@ -4,7 +4,7 @@ MS=/Library/MobileSubstrate/DynamicLibraries
 
 IP=5s
 
-FRAMEWORKS=include/libsubstrate.dylib -framework IOMobileFramebuffer -framework Foundation -framework CoreGraphics -framework CoreSurface -framework CoreText
+FRAMEWORKS=include/libsubstrate.dylib -framework IOMobileFramebuffer -framework Foundation -framework CoreGraphics -framework CoreSurface -framework CoreText -framework IOSurface
 
 include base.mk
 CFLAGS+=-Wno-unused-function
@@ -14,7 +14,7 @@ clean:
 
 $(DYLIB): tweak.o
 	@echo linking $@...
-	@$(CC) -dynamiclib -o $@ $^ $(FRAMEWORKS) -undefined suppress -flat_namespace
+	@$(CC) -dynamiclib -o $@ $^ $(FRAMEWORKS)
 
 install: $(DYLIB)
 ifeq ("i386", "$(shell uname -p)")
