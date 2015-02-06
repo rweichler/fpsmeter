@@ -91,7 +91,7 @@ static void drawToContext(CGContextRef context, int fps)
     CGContextShowTextAtPoint (context, 50, 20, text, strlen(text));
 }
 
-void drawToSurface(int fps, IOSurfaceRef buffer)
+void drawToSurface(IOSurfaceRef buffer, int fps)
 {
     CGContextRef context = NULL;
     uint32_t seed;
@@ -104,24 +104,24 @@ void drawToSurface(int fps, IOSurfaceRef buffer)
 
 int IOMobileFramebufferGetMainDisplay(void **);
 
-void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer)
+void yeah_breh(IOMobileFramebufferRef fb, IOSurfaceRef buffer, int fps)
 {
     if(fps == -1) return;
 
     //draw surface from orig hook
-    //drawToSurface(fps, buffer); //is an IOSurface
+    //drawToSurface(buffer, fps); //is an IOSurface
 
     //get surface from IOMobileFramebuffer
     IOSurfaceRef other_buffer; //is also an IOSurface
     IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
-    //drawToSurface(fps, other_buffer);
+    //drawToSurface(other_buffer, fps);
 
     //get surface from the main buffer
     IOSurfaceRef main_buffer; //not an IOSurface... just some random pointer. :/
     IOMobileFramebufferRef main_fb;
     IOMobileFramebufferGetMainDisplay(&main_fb);
     IOMobileFramebufferGetLayerDefaultSurface(main_fb, 0, (CoreSurfaceBufferRef *)&main_buffer);
-    drawToSurface(fps, main_buffer); //doesnt do anything..
+    drawToSurface(main_buffer, fps); //doesnt do anything..
 }
 
 int get_fps()
@@ -148,11 +148,11 @@ MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
     int fps = buffer == NULL ? -1 : get_fps();
 
     //idk... do it before and after %orig so it flickers less???????
-    yeah_breh(fps, fb, buffer);
+    yeah_breh(fb, buffer, fps);
 
     kern_return_t result = _hook_IOMobileFramebufferSwapSetLayer(fb, layer, buffer, bounds, frame, flags);
 
-    yeah_breh(fps, fb, buffer);
+    yeah_breh(fb, buffer, fps);
 
 
     return result;
