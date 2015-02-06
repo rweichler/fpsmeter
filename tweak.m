@@ -67,7 +67,7 @@ const CGFloat tc[] = {
     1
 };
 
-static void drawFPS(CGContextRef context, int fps)
+static void drawToContext(CGContextRef context, int fps)
 {
     //setup colors
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -91,13 +91,13 @@ static void drawFPS(CGContextRef context, int fps)
     CGContextShowTextAtPoint (context, 50, 20, text, strlen(text));
 }
 
-void yeah_bro(int fps, IOSurfaceRef buffer)
+void drawToSurface(int fps, IOSurfaceRef buffer)
 {
     CGContextRef context = NULL;
     uint32_t seed;
     if(initContext(buffer, &context, &seed))
     {
-        drawFPS(context, fps);
+        drawToContext(context, fps);
         delContext(buffer, &context, &seed);
     }
 }
@@ -109,19 +109,19 @@ void yeah_breh(int fps, IOMobileFramebufferRef fb, IOSurfaceRef buffer)
     if(fps == -1) return;
 
     //draw surface from orig hook
-    //yeah_bro(fps, buffer); //is an IOSurface
+    //drawToSurface(fps, buffer); //is an IOSurface
 
     //get surface from IOMobileFramebuffer
     IOSurfaceRef other_buffer; //is also an IOSurface
     IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
-    //yeah_bro(fps, other_buffer);
+    //drawToSurface(fps, other_buffer);
 
     //get surface from the main buffer
     IOSurfaceRef main_buffer; //not an IOSurface... just some random pointer. :/
     IOMobileFramebufferRef main_fb;
     IOMobileFramebufferGetMainDisplay(&main_fb);
     IOMobileFramebufferGetLayerDefaultSurface(main_fb, 0, (CoreSurfaceBufferRef *)&main_buffer);
-    yeah_bro(fps, main_buffer); //doesnt do anything..
+    drawToSurface(fps, main_buffer); //doesnt do anything..
 }
 
 int get_fps()
