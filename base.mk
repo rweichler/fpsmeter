@@ -44,6 +44,10 @@ CC=clang -g -O2 $(ARCH) $(SDKFLAGS) $(INCLUDE)
 	@../bin/logos.pl $< > $(@:.o=.x.o.m)
 	@$(CC) $(CFLAGS) -c -o $@ $(@:.o=.x.o.m)
 
+%.o: %.c
+	@echo compiling $<...
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
 %.o: %.m
 	@echo compiling $<...
 	@$(CC) $(CFLAGS) -c -o $@ $<
