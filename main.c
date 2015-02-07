@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <time.h>
 
-int *CARenderServerGetFrameCounter(int);
+int CARenderServerGetFrameCounter(int);
 
 
 int get_frames()
 {
-    int *x = CARenderServerGetFrameCounter(0);
-    return (int)x;
+    return CARenderServerGetFrameCounter(0);
 }
 
 #define FREQUENCY 0.1
