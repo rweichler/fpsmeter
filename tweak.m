@@ -109,12 +109,18 @@ void yeah_breh(IOMobileFramebufferRef fb, IOSurfaceRef buffer, int fps)
     if(fps == -1) return;
 
     //draw surface from orig hook
-    //drawToSurface(buffer, fps); //is an IOSurface
+    if(buffer != NULL)
+    {
+        //drawToSurface(buffer, fps); //is an IOSurface
+    }
 
     //get surface from IOMobileFramebuffer
-    IOSurfaceRef other_buffer; //is also an IOSurface
-    IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
-    //drawToSurface(other_buffer, fps);
+    if(fb != NULL)
+    {
+        IOSurfaceRef other_buffer; //is also an IOSurface
+        IOMobileFramebufferGetLayerDefaultSurface(fb, 0, (CoreSurfaceBufferRef *)&other_buffer);
+        //drawToSurface(other_buffer, fps);
+    }
 
     //get surface from the main buffer
     IOSurfaceRef main_buffer; //not an IOSurface... just some random pointer. :/
@@ -145,7 +151,7 @@ MSHook(kern_return_t, hook_IOMobileFramebufferSwapSetLayer,
     CGRect frame,
    int flags
 ) {
-    int fps = buffer == NULL ? -1 : get_fps();
+    int fps = get_fps();
 
     //idk... do it before and after %orig so it flickers less???????
     yeah_breh(fb, buffer, fps);
